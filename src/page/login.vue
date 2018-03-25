@@ -1,9 +1,9 @@
 <template>
   	<div class="login_page fillcontain">
-	  	<transition name="form-fade" mode="in-out">
+	  	<!--<transition name="form-fade" mode="in-out">-->
 	  		<section class="form_contianer" v-show="showLogin">
 		  		<div class="manage_tip">
-		  			<p>elm后台管理系统</p>
+		  			<p>档案管理系统</p>
 		  		</div>
 		    	<el-form :model="loginForm" :rules="rules" ref="loginForm">
 					<el-form-item prop="username">
@@ -16,11 +16,11 @@
 				    	<el-button type="primary" @click="submitForm('loginForm')" class="submit_btn">登陆</el-button>
 				  	</el-form-item>
 				</el-form>
-				<p class="tip">温馨提示：</p>
-				<p class="tip">未登录过的新用户，自动注册</p>
-				<p class="tip">注册过的用户可凭账号密码登录</p>
+				<!--<p class="tip">温馨提示：</p>-->
+				<!--<p class="tip">未登录过的新用户，自动注册</p>-->
+				<!--<p class="tip">注册过的用户可凭账号密码登录</p>-->
 	  		</section>
-	  	</transition>
+	  	<!--</transition>-->
   	</div>
 </template>
 
@@ -83,18 +83,18 @@
 					}
 				});
 			},
-		},
-		watch: {
-			adminInfo: function (newValue){
-				if (newValue.id) {
-					this.$message({
-                        type: 'success',
-                        message: '检测到您之前登录过，将自动登录'
-                    });
-					this.$router.push('manage')
-				}
-			}
 		}
+		// watch: {
+		// 	adminInfo: function (newValue){
+		// 		if (newValue.id) {
+		// 			this.$message({
+         //                type: 'success',
+         //                message: '检测到您之前登录过，将自动登录'
+         //            });
+		// 			this.$router.push('manage')
+		// 		}
+		// 	}
+		// }
 	}
 </script>
 

@@ -1,6 +1,48 @@
 <template>
     <div class="fillcontain">
         <head-top></head-top>
+
+
+        <div >
+            <!--<transition name="form-fade" mode="in-out">-->
+            <section  v-show="true">
+                <H3 align="center">查询</H3>
+                <el-row style="margin-top: 20px;">
+                    <el-col :span="12" :offset="4">
+                <el-form :model="condition"  ref="condition" label-width="150px" class="demo-formData">
+                    <el-form-item label="档案编号">
+                        <el-input type="text"   v-model="condition.archiveNum">
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item  label="状态:">
+                        <el-select :rows="1"  v-model="condition.status">
+                            <el-option value="已借出">已借出</el-option>
+                            <el-option value="已经归还">已经归还</el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="借出日期">
+                        <el-date-picker v-model="condition.referdate" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>
+
+
+
+
+
+
+
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('loginForm')" class="submit_btn">查询</el-button>
+                    </el-form-item>
+                </el-form>
+                    </el-col>
+                    </el-row>
+            </section>
+        </div>
+
         <div class="table_container">
             <el-table
                 :data="tableData"
@@ -142,6 +184,14 @@
                 categoryOptions: [],
                 selectedCategory: [],
                 address: {},
+                condition: {
+                    referdate:'',
+                    archiveNum: '',
+                    owner: '',
+                    user:'',
+                    status:'',
+                    return:''
+                },
             }
         },
         created(){

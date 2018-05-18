@@ -122,7 +122,7 @@ export const foodCategory = (latitude, longitude) => fetch('/shopping/v2/restaur
  * 获取餐馆列表
  */
 
-export const getResturants = data => fetch('/shopping/restaurants', data);
+export const getArchives = data => fetch('/archive/records', data, 'POST');
 
 /**
  * 获取餐馆详细信息

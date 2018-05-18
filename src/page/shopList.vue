@@ -1,10 +1,7 @@
 <template>
     <div class="fillcontain">
         <head-top></head-top>
-
-
         <div >
-            <!--<transition name="form-fade" mode="in-out">-->
             <section  v-show="true">
                 <H3 align="center">查询</H3>
                 <el-row style="margin-top: 20px;">
@@ -53,14 +50,8 @@
                         </el-date-picker>
                     </el-form-item>
 
-
-
-
-
-
-
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('loginForm')" class="submit_btn">查询</el-button>
+                        <el-button type="primary" @click="submitForm('condition')" class="submit_btn">查询</el-button>
                     </el-form-item>
                 </el-form>
                     </el-col>
@@ -75,58 +66,60 @@
                 <el-table-column type="expand">
                   <template scope="props">
                     <el-form label-position="left" inline class="demo-table-expand">
-                      <el-form-item label="店铺名称">
-                        <span>{{ props.row.name }}</span>
+                      <el-form-item label="调档日期">
+                        <span>{{ props.row.referdate }}</span>
                       </el-form-item>
-                      <el-form-item label="店铺地址">
-                        <span>{{ props.row.address }}</span>
+                      <el-form-item label="公证书号">
+                        <span>{{ props.row.archiveNum }}</span>
                       </el-form-item>
-                      <el-form-item label="店铺介绍">
-                        <span>{{ props.row.description }}</span>
+                      <el-form-item label="当事人">
+                        <span>{{ props.row.owner }}</span>
                       </el-form-item>
-                      <el-form-item label="店铺 ID">
-                        <span>{{ props.row.id }}</span>
+                      <el-form-item label="用卷人">
+                        <span>{{ props.row.user }}</span>
                       </el-form-item>
-                      <el-form-item label="联系电话">
-                        <span>{{ props.row.phone }}</span>
+                      <el-form-item label="当前状态">
+                        <span>{{ props.row.status }}</span>
                       </el-form-item>
-                      <el-form-item label="评分">
-                        <span>{{ props.row.rating }}</span>
-                      </el-form-item>
-                      <el-form-item label="销售量">
-                        <span>{{ props.row.recent_order_num }}</span>
-                      </el-form-item>
-                      <el-form-item label="分类">
-                        <span>{{ props.row.category }}</span>
+                      <el-form-item label="归还日期">
+                        <span>{{ props.row.returnDate }}</span>
                       </el-form-item>
                     </el-form>
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="店铺名称"
-                  prop="name">
+                  label="调档日期"
+                  prop="referdate">
                 </el-table-column>
                 <el-table-column
-                  label="店铺地址"
-                  prop="address">
+                  label="公证书号"
+                  prop="archiveNum">
                 </el-table-column>
                 <el-table-column
-                  label="店铺介绍"
-                  prop="description">
+                  label="当事人"
+                  prop="owner">
+                </el-table-column>
+                <el-table-column
+                    label="用卷人"
+                    prop="user">
+                </el-table-column>
+                <el-table-column
+                    label="当前状态"
+                    prop="status">
+                </el-table-column>
+                <el-table-column
+                    label="归还日期"
+                    prop="returnDate">
                 </el-table-column>
                 <el-table-column label="操作" width="200">
                   <template scope="scope">
                     <el-button
                       size="mini"
                       @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button
-                      size="mini"
-                      type="Success"
-                      @click="addFood(scope.$index, scope.row)">添加食品</el-button>
-                    <el-button
-                      size="mini"
-                      type="danger"
-                      @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <!--<el-button-->
+                      <!--size="mini"-->
+                      <!--type="danger"-->
+                      <!--@click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
                   </template>
                 </el-table-column>
             </el-table>
@@ -192,7 +185,7 @@
 <script>
     import headTop from '../components/headTop'
     import {baseUrl, baseImgPath} from '@/config/env'
-    import {cityGuess, getResturants, getResturantsCount, foodCategory, updateResturant, searchplace, deleteResturant} from '@/api/getData'
+    import {cityGuess, getArchives, getResturantsCount, foodCategory, updateResturant, searchplace, deleteResturant} from '@/api/getData'
     export default {
         data(){
             return {
@@ -230,13 +223,6 @@
         methods: {
             async initData(){
                 try{
-                    this.city = await cityGuess();
-                    const countData = await getResturantsCount();
-                    if (countData.status == 1) {
-                        this.count = countData.count;
-                    }else{
-                        throw new Error('获取数据失败');
-                    }
                     this.getResturants();
                 }catch(err){
                     console.log('获取数据失败', err);
@@ -268,23 +254,24 @@
                     console.log('获取商铺种类失败', err);
                 }
             },
-            async getResturants(){
-                const {latitude, longitude} = this.city;
-                const restaurants = await getResturants({latitude, longitude, offset: this.offset, limit: this.limit});
+
+            async submitForm(condition) {
+                const archiveData = await getArchives(this.condition);
                 this.tableData = [];
-                restaurants.forEach(item => {
+                archiveData.forEach(item => {
                     const tableData = {};
-                    tableData.name = item.name;
-                    tableData.address = item.address;
-                    tableData.description = item.description;
-                    tableData.id = item.id;
-                    tableData.phone = item.phone;
-                    tableData.rating = item.rating;
-                    tableData.recent_order_num = item.recent_order_num;
-                    tableData.category = item.category;
-                    tableData.image_path = item.image_path;
+                    tableData.referdate = item.referdate;
+                    tableData.archiveNum = item.archiveNum;
+                    tableData.owner = item.owner;
+                    tableData.user = item.user;
+                    tableData.status = item.status;
+                    tableData.returndate = item.returndate;
                     this.tableData.push(tableData);
                 })
+            },
+            async getResturants(){
+                // const restaurants = await getResturants({latitude, longitude, offset: this.offset, limit: this.limit});
+
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);

@@ -140,7 +140,7 @@ export const getResturantsCount = () => fetch('/shopping/restaurants/count');
  * 更新餐馆信息
  */
 
-export const updateResturant = data => fetch('/shopping/updateshop', data, 'POST');
+export const updateArchive = data => fetch('/archive/updaterecord', data, 'POST');
 
 /**
  * 删除餐馆

@@ -116,10 +116,6 @@
                     <el-button
                       size="mini"
                       @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <!--<el-button-->
-                      <!--size="mini"-->
-                      <!--type="danger"-->
-                      <!--@click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
                   </template>
                 </el-table-column>
             </el-table>
@@ -133,44 +129,38 @@
                   :total="count">
                 </el-pagination>
             </div>
-            <el-dialog title="修改店铺信息" v-model="dialogFormVisible">
+            <el-dialog title="更新卷宗信息" v-model="dialogFormVisible">
                 <el-form :model="selectTable">
-                    <el-form-item label="店铺名称" label-width="100px">
-                        <el-input v-model="selectTable.name" auto-complete="off"></el-input>
+                    <el-form-item label="公证书号">
+                        <el-input type="text" readonly="true"    v-model="selectTable.archiveNum">
+                        </el-input>
                     </el-form-item>
-                    <el-form-item label="详细地址" label-width="100px">
-                        <el-autocomplete
-                          v-model="address.address"
-                          :fetch-suggestions="querySearchAsync"
-                          placeholder="请输入地址"
-                          style="width: 100%;"
-                          @select="addressSelect"
-                        ></el-autocomplete>
-                        <span>当前城市：{{city.name}}</span>
+                    <el-form-item label="当事人">
+                        <el-input type="text"  readonly="true" v-model="selectTable.owner">
+                        </el-input>
                     </el-form-item>
-                    <el-form-item label="店铺介绍" label-width="100px">
-                        <el-input v-model="selectTable.description"></el-input>
+
+                    <el-form-item label="用卷人">
+                        <el-input type="text"   v-model="selectTable.user">
+                        </el-input>
                     </el-form-item>
-                    <el-form-item label="联系电话" label-width="100px">
-                        <el-input v-model="selectTable.phone"></el-input>
+
+                    <el-form-item  label="当前状态:">
+                        <el-select :rows="1"  v-model="selectTable.status">
+                            <el-option label="需求提交中"  value="0"></el-option>
+                            <el-option label="卷宗已调走" value="1"></el-option>
+                            <el-option label="已归还"   value="2"></el-option>
+                        </el-select>
                     </el-form-item>
-                    <el-form-item label="店铺分类" label-width="100px">
-                        <el-cascader
-                          :options="categoryOptions"
-                          v-model="selectedCategory"
-                          change-on-select
-                        ></el-cascader>
+                    <el-form-item label="调档日期">
+                        <el-date-picker v-model="selectTable.referdate" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
-                    <el-form-item label="商铺图片" label-width="100px">
-                        <el-upload
-                          class="avatar-uploader"
-                          :action="baseUrl + '/v1/addimg/shop'"
-                          :show-file-list="false"
-                          :on-success="handleServiceAvatarScucess"
-                          :before-upload="beforeAvatarUpload">
-                          <img v-if="selectTable.image_path" :src="baseImgPath + selectTable.image_path" class="avatar">
-                          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                        </el-upload>
+                    <el-form-item label="归还日期">
+                        <el-date-picker v-model="selectTable.returndate" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                        </el-date-picker>
                     </el-form-item>
                 </el-form>
               <div slot="footer" class="dialog-footer">
@@ -185,7 +175,7 @@
 <script>
     import headTop from '../components/headTop'
     import {baseUrl, baseImgPath} from '@/config/env'
-    import {cityGuess, getArchives, getResturantsCount, foodCategory, updateResturant, searchplace, deleteResturant} from '@/api/getData'
+    import {cityGuess, getArchives, getResturantsCount, foodCategory, updateArchive, searchplace, deleteResturant} from '@/api/getData'
     export default {
         data(){
             return {
@@ -214,48 +204,11 @@
                 },
             }
         },
-        created(){
-            this.initData();
-        },
     	components: {
     		headTop,
     	},
         methods: {
-            async initData(){
-                try{
-                    this.getResturants();
-                }catch(err){
-                    console.log('获取数据失败', err);
-                }
-            },
-            async getCategory(){
-                try{
-                    const categories = await foodCategory();
-                    categories.forEach(item => {
-                        if (item.sub_categories.length) {
-                            const addnew = {
-                                value: item.name,
-                                label: item.name,
-                                children: []
-                            }
-                            item.sub_categories.forEach((subitem, index) => {
-                                if (index == 0) {
-                                    return
-                                }
-                                addnew.children.push({
-                                    value: subitem.name,
-                                    label: subitem.name,
-                                })
-                            })
-                            this.categoryOptions.push(addnew)
-                        }
-                    })
-                }catch(err){
-                    console.log('获取商铺种类失败', err);
-                }
-            },
-
-            async submitForm(condition) {
+            async getArchives() {
                 const archiveData = await getArchives(this.condition);
                 this.tableData = [];
                 archiveData.forEach(item => {
@@ -269,9 +222,8 @@
                     this.tableData.push(tableData);
                 })
             },
-            async getResturants(){
-                // const restaurants = await getResturants({latitude, longitude, offset: this.offset, limit: this.limit});
-
+            async submitForm(condition) {
+               this.getArchives();
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
@@ -279,7 +231,7 @@
             handleCurrentChange(val) {
                 this.currentPage = val;
                 this.offset = (val - 1)*this.limit;
-                this.getResturants()
+                this.getArchives();
             },
             handleEdit(index, row) {
                 this.selectTable = row;
@@ -290,78 +242,14 @@
                     this.getCategory();
                 }
             },
-            addFood(index, row){
-                this.$router.push({ path: 'addGoods', query: { restaurant_id: row.id }})
-            },
-            async handleDelete(index, row) {
-                try{
-                    const res = await deleteResturant(row.id);
-                    if (res.status == 1) {
-                        this.$message({
-                            type: 'success',
-                            message: '删除店铺成功'
-                        });
-                        this.tableData.splice(index, 1);
-                    }else{
-                        throw new Error(res.message)
-                    }
-                }catch(err){
-                    this.$message({
-                        type: 'error',
-                        message: err.message
-                    });
-                    console.log('删除店铺失败')
-                }
-            },
-            async querySearchAsync(queryString, cb) {
-                if (queryString) {
-                    try{
-                        const cityList = await searchplace(this.city.id, queryString);
-                        if (cityList instanceof Array) {
-                            cityList.map(item => {
-                                item.value = item.address;
-                                return item;
-                            })
-                            cb(cityList)
-                        }
-                    }catch(err){
-                        console.log(err)
-                    }
-                }
-            },
-            addressSelect(vale){
-                const {address, latitude, longitude} = vale;
-                this.address = {address, latitude, longitude};
-            },
-            handleServiceAvatarScucess(res, file) {
-                if (res.status == 1) {
-                    this.selectTable.image_path = res.image_path;
-                }else{
-                    this.$message.error('上传图片失败！');
-                }
-            },
-            beforeAvatarUpload(file) {
-                const isRightType = (file.type === 'image/jpeg') || (file.type === 'image/png');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isRightType) {
-                    this.$message.error('上传头像图片只能是 JPG 格式!');
-                }
-                if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return isRightType && isLt2M;
-            },
             async updateShop(){
                 this.dialogFormVisible = false;
                 try{
-                    Object.assign(this.selectTable, this.address);
-                    this.selectTable.category = this.selectedCategory.join('/');
-                    const res = await updateResturant(this.selectTable)
+                    const res = await updateArchive(this.selectTable)
                     if (res.status == 1) {
                         this.$message({
                             type: 'success',
-                            message: '更新店铺信息成功'
+                            message: '更新卷宗信息成功'
                         });
                         this.getResturants();
                     }else{
@@ -371,7 +259,7 @@
                         });
                     }
                 }catch(err){
-                    console.log('更新餐馆信息失败', err);
+                    console.log('更新卷宗信息失败', err);
                 }
             },
         },

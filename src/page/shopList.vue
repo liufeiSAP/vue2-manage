@@ -10,20 +10,45 @@
                 <el-row style="margin-top: 20px;">
                     <el-col :span="12" :offset="4">
                 <el-form :model="condition"  ref="condition" label-width="150px" class="demo-formData">
-                    <el-form-item label="档案编号">
+                    <el-form-item label="公证书号">
                         <el-input type="text"   v-model="condition.archiveNum">
                         </el-input>
                     </el-form-item>
 
-                    <el-form-item  label="状态:">
+                    <el-form-item label="当事人">
+                        <el-input type="text"   v-model="condition.owner">
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item label="用卷人">
+                        <el-input type="text"   v-model="condition.user">
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item  label="当前状态:">
                         <el-select :rows="1"  v-model="condition.status">
-                            <el-option value="已借出">已借出</el-option>
-                            <el-option value="已经归还">已经归还</el-option>
+                            <el-option label="需求提交中"  value="0"></el-option>
+                            <el-option label="卷宗已调走" value="1"></el-option>
+                            <el-option label="已归还"   value="2"></el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="借出日期">
-                        <el-date-picker v-model="condition.referdate" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                    <el-form-item label="调档日期">
+                        <el-date-picker v-model="condition.referdateStart" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                        </el-date-picker>
+                          -
+                        <el-date-picker v-model="condition.referdateEnd" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>
+
+                    <el-form-item label="归还日期">
+                        <el-date-picker v-model="condition.returnStart" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                        </el-date-picker>
+                        -
+                        <el-date-picker v-model="condition.returnEnd" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
                                         value-format="yyyy-MM-dd" placeholder="选择日期">
                         </el-date-picker>
                     </el-form-item>
@@ -185,12 +210,14 @@
                 selectedCategory: [],
                 address: {},
                 condition: {
-                    referdate:'',
+                    referdateStart:'',
+                    referdateEnd:'',
                     archiveNum: '',
                     owner: '',
                     user:'',
                     status:'',
-                    return:''
+                    returnStart:'',
+                    returnEnd:''
                 },
             }
         },

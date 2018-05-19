@@ -109,7 +109,9 @@ export const addCategory = data => fetch('/shopping/addcategory', data, 'POST');
  * 添加食品
  */
 
-export const addFood = data => fetch('/shopping/addfood', data, 'POST');
+export const addArchiveRecord = data => fetch('/archive/record', data, 'POST');
+
+
 
 
 /**

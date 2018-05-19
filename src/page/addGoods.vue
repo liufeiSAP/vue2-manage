@@ -27,20 +27,20 @@
                             </el-form-item>
 
                             <el-form-item label="调档日期">
-                                <el-date-picker v-model="condition.referdateStart" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                <el-date-picker v-model="condition.referdate" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
                                                 value-format="yyyy-MM-dd" placeholder="选择日期">
                                 </el-date-picker>
 
                             </el-form-item>
 
                             <el-form-item label="归还日期">
-                                <el-date-picker v-model="condition.returnStart" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
+                                <el-date-picker v-model="condition.returndate" type="date" @change="dateChangebirthday" format="yyyy-MM-dd"
                                                 value-format="yyyy-MM-dd" placeholder="选择日期">
                                 </el-date-picker>
                             </el-form-item>
 
                             <el-form-item>
-                                <el-button type="primary" @click="submitForm('condition')" class="submit_btn">增加</el-button>
+                                <el-button type="primary" @click="submitForm()" class="submit_btn">增加</el-button>
                             </el-form-item>
                         </el-form>
                     </el-col>
@@ -53,46 +53,39 @@
 
 <script>
  	import headTop from '@/components/headTop'
-    import {getCategory, addCategory, addFood} from '@/api/getData'
-    import {baseUrl, baseImgPath} from '@/config/env'
+    import {addArchiveRecord} from '@/api/getData'
     export default {
         data(){
             return {
-                baseUrl,
-                baseImgPath,
-                city: {},
-                offset: 0,
-                limit: 20,
-                count: 0,
-                tableData: [],
-                currentPage: 1,
-                selectTable: {},
-                dialogFormVisible: false,
-                categoryOptions: [],
-                selectedCategory: [],
-                address: {},
                 condition: {
-                    referdateStart:'',
-                    referdateEnd:'',
+                    referdate:'',
                     archiveNum: '',
                     owner: '',
                     user:'',
                     status:'',
-                    returnStart:'',
-                    returnEnd:''
+                    returndate:''
                 },
             }
         },
     	components: {
     		headTop,
     	},
-    	created(){
-    	},
-    	computed: {
-    	},
     	methods: {
-    		async initData(){
-    		},
+            async submitForm() {
+                const res = await addArchiveRecord(this.condition);
+                if (res.status == 1) {
+                    this.$message({
+                        type: 'success',
+                        message: '增加调档信息成功'
+                    });
+                    this.getResturants();
+                }else{
+                    this.$message({
+                        type: 'error',
+                        message: res.message
+                    });
+                }
+            },
 		},
     }
 </script>

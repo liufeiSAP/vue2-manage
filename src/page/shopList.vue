@@ -116,6 +116,7 @@
                     <el-button
                       size="mini"
                       @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+
                   </template>
                 </el-table-column>
             </el-table>
@@ -129,7 +130,7 @@
                   :total="count">
                 </el-pagination>
             </div>
-            <el-dialog title="更新卷宗信息" v-model="dialogFormVisible">
+            <el-dialog title="更新调档记录" v-model="dialogFormVisible">
                 <el-form :model="selectTable">
                     <el-form-item label="公证书号">
                         <el-input type="text" readonly="true"    v-model="selectTable.archiveNum">
@@ -241,6 +242,11 @@
                 if (!this.categoryOptions.length) {
                     this.getCategory();
                 }
+            },
+
+
+            addFood(index, row){
+                this.$router.push({ path: 'addGoods', query: { restaurant_id: row.id }})
             },
             async updateShop(){
                 this.dialogFormVisible = false;

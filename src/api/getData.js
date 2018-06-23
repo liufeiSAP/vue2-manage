@@ -80,7 +80,7 @@ export const cityGuess = () => fetch('/v1/cities', {
  * 添加商铺
  */
 
-export const addShop = data => fetch('/shopping/addShop', data, 'POST');
+export const addShop = data => fetch('/users', data, 'POST');
 
 /**
  * 获取搜索地址

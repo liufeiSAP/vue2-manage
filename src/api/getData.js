@@ -126,6 +126,9 @@ export const foodCategory = (latitude, longitude) => fetch('/shopping/v2/restaur
 
 export const getArchives = data => fetch('/archive/records', data, 'POST');
 
+
+export const getArchivesHis = data => fetch('/archive/recordsHis', data, 'POST');
+
 /**
  * 获取餐馆详细信息
  */

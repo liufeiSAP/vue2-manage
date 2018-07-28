@@ -7,6 +7,7 @@
 					<el-submenu index="2">
 						<template slot="title"><i class="el-icon-document"></i>数据管理</template>
 						<el-menu-item index="shopList">查询调档记录</el-menu-item>
+                        <el-menu-item index="visitor">查询调档历史记录</el-menu-item>
 						<el-menu-item index="addGoods">增加调档记录</el-menu-item>
 					</el-submenu>
 					<el-submenu index="3">

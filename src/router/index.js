@@ -65,7 +65,7 @@ const routes = [
 		},{
 			path: '/visitor',
 			component: visitor,
-			meta: ['图表', '用户分布'],
+			meta: ['数据管理', '档案历史记录'],
 		},{
 			path: '/newMember',
 			component: newMember,
